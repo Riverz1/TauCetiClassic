@@ -230,6 +230,7 @@
 	desc = "Welding goggles made from more expensive materials, strangely smells like oil."
 	icon_state = "rwelding_CE-g"
 	item_state = "rwelding_CE-g"
+	item_state_world = "rwelding_CE-g_w"
 
 /obj/item/clothing/glasses/sunglasses/blindfold
 	name = "blindfold"
