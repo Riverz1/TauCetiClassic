@@ -34,8 +34,7 @@
 		to_chat(M, "<span class='warning'>You know better than to violate the security of The Den, best wait until you leave to use [src].</span>")
 		return FALSE
 	if(!global_access)
-		var/role = M.mind.special_role
-		if(role != "Wizard" && role != "Wizard Apprentice")
+		if(!iswizard(M) && !iswizardapprentice(M))
 			to_chat(M, "<span class='warning'>You have no idea how to use [src].</span>")
 			return FALSE
 	return TRUE
