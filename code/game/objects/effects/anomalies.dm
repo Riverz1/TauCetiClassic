@@ -243,6 +243,14 @@
 		"impedrezene",
 		"adminordrazine"
 	)
+	var/list/atmos_gases = list(
+		"phoron",
+		"oxygen",
+		"nitrogen",
+		"carbon_dioxide",
+		"tritium",
+		"hydrogen"
+	)
 	var/release_time = 15 SECONDS
 	var/move_chance = 70
 
@@ -273,15 +281,18 @@
 
 /obj/effect/anomaly/gas/proc/release_gas()
 	var/selected_gas = pick(gas_types)
-
 	var/datum/effect/effect/system/smoke_spread/chem/S = new()
 	var/datum/reagents/R = new/datum/reagents(2700)
 	R.my_atom = src
 	R.add_reagent(selected_gas, 900)
 	S.set_up(R, 10, 0, loc, 60)
 	S.start()
-
 	playsound(src, 'sound/effects/air_release.ogg', VOL_EFFECTS_MASTER)
+
+	var/turf/simulated/T = get_turf(src)
+	if(istype(T))
+		var/chosen_gas = pick(atmos_gases)
+		T.assume_gas(chosen_gas, 1500)
 
 /obj/effect/anomaly/gas/proc/try_move()
 	var/turf/new_loc = get_step(src, pick(alldirs))
