@@ -13,13 +13,31 @@
 	var/atom/target = null
 
 /obj/item/weapon/plastique/attack_self(mob/user)
-	if(!handle_fumbling(user, src, SKILL_TASK_TRIVIAL, list(/datum/skill/firearms = SKILL_LEVEL_TRAINED), message_self = "<span class='notice'>You fumble around figuring out how to set timer on [src]...</span>"))
+	if(!handle_fumbling(user, src, SKILL_TASK_TRIVIAL, list(/datum/skill/firearms = SKILL_LEVEL_TRAINED), message_self = "<span class='notice'>Вы пытаетесь разобраться как установить таймер на [src]...</span>"))
 		return
-	var/newtime = input(usr, "Please set the timer.", "Timer", 10) as num
+	var/newtime_str = input(usr, "Установите таймер (от 10 секунд до 10 минут).", "Таймер", "[timer] Секунд") as text|null
+	if(isnull(newtime_str))
+		return
+	var/newtime = text2num(newtime_str)
+	if(isnull(newtime))
+		to_chat(user, "<span class='warning'>Введите корректное число!</span>")
+		return
 	if(newtime < 10)
 		newtime = 10
+	if(newtime > 600)
+		newtime = 600
 	timer = newtime
-	to_chat(user, "Таймер установлен на [timer] секунд.")
+	var/display_time
+	if(timer >= 60)
+		var/mins = round(timer / 60)
+		var/secs = timer % 60
+		if(secs > 0)
+			display_time = "[mins] мин. [secs] сек."
+		else
+			display_time = "[mins] мин."
+	else
+		display_time = "[timer] сек."
+	to_chat(user, "Таймер установлен на [display_time]")
 
 /obj/item/weapon/plastique/afterattack(atom/target, mob/user, proximity, params)
 	if (!proximity)
@@ -32,18 +50,17 @@
 		var/mob/living/M = target
 		M.log_combat(user, "planted (attempt) with [name]")
 		SEND_SIGNAL(user, COMSIG_HUMAN_HARMED_OTHER, M)
-		user.visible_message("<span class ='red'> [user.name] пытается установить взрывчатку на [M.name]!</span>")
+		user.visible_message("<span class='red'>[user.name] пытается установить взрывчатку на [M.name]!</span>")
 	else
-		user.attack_log += "\[[time_stamp()]\] <font color='red'> [user.real_name] tried planting [name] on [target.name]</font>"
+		user.attack_log += "\[[time_stamp()]\] <font color='red'>[user.real_name] tried planting [name] on [target.name]</font>"
 		msg_admin_attack("[user.real_name] ([user.ckey]) [ADMIN_FLW(user)] tried planting [name] on [target.name]", user)
-
 	var/planting_time = apply_skill_bonus(user, SKILL_TASK_TOUGH, list(/datum/skill/firearms = SKILL_LEVEL_MASTER, /datum/skill/engineering = SKILL_LEVEL_PRO), -0.1)
 	if(do_after(user, planting_time, target = target) && user.Adjacent(target))
 		if(ismob(target))
 			var/mob/living/M = target
 			M.attack_log += "\[[time_stamp()]\]<font color='orange'> Had the [name] planted on them by [user.real_name] ([user.ckey])</font>"
-			user.visible_message("<span class ='red'> [user.name] устанавливает взрывчатку на [M.name]!</span>")
-		to_chat(user, "Взрывчатка установлена, отсчет времени [timer].")
+			user.visible_message("<span class='red'>[user.name] устанавливает взрывчатку на [M.name]!</span>")
+		to_chat(user, "Взрывчатка установлена, отсчёт времени [timer] секунд.")
 		user.drop_item()
 		plant_bomb(target)
 
@@ -64,7 +81,6 @@
 		W.dismantle_wall(1)
 	else
 		target.ex_act(EXPLODE_DEVASTATE)
-
 	explosion(location, 0, 0, 2, 3)
 	if(target && !QDELETED(target))
 		target.cut_overlay(image('icons/obj/assemblies.dmi', "plastic-explosive2"))
