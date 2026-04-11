@@ -447,3 +447,16 @@
 /datum/quality/positiveish/allchannels/add_effect(mob/living/carbon/human/H)
 	H.equip_or_collect(new /obj/item/device/encryptionkey/allchannels(H), SLOT_R_STORE)
 	to_chat(H, "<span class='notice'>Возможно, чтобы установить ключ шифрования, придётся расковырять наушник отверткой. Только не попадись охране!</span>")
+
+/datum/quality/positiveish/forged_credentials
+	name = "Bribe"
+	desc = "Вы подкупили одного из сотрудника отдела кадров. Теперь у вас расширенный доступ."
+	requirement = "Ассистент."
+
+	jobs_required = list("Assistant")
+
+/datum/quality/positiveish/forged_credentials/add_effect(mob/living/carbon/human/H, latespawn)
+	to_chat(H, "<span class='notice'>Ваш ID-доступ слегка расширен. Не привлекайте к этому внимания.</span>")
+	var/obj/item/weapon/card/id/id = H.get_idcard()
+	if(id)
+		id.access += list(access_engineering_lobby, access_medical, access_research, access_mailsorting)
