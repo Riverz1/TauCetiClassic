@@ -459,4 +459,4 @@
 	to_chat(H, "<span class='notice'>Ваш ID-доступ слегка расширен. Не привлекайте к этому внимания.</span>")
 	var/obj/item/weapon/card/id/id = H.get_idcard()
 	if(id)
-		id.access += list(access_engineering_lobby, access_medical, access_research, access_mailsorting)
+		id.access |= list(access_engineering_lobby, access_medical, access_research, access_mailsorting)
