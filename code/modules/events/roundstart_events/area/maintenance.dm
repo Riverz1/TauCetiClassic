@@ -97,7 +97,6 @@
 			for(var/i in 1 to rand(3,5))
 				H.apply_damage(rand(10,25), BRUTE, pick(body_zones))
 
-	// --- Изуродование ---
 	var/mutilation_desc = "none"
 	if(prob(30))
 		var/mutilation_type = pick("decapitate", "missing_limb", "severe_damage", "all")
@@ -122,7 +121,6 @@
 						H.apply_damage(200, BRUTE, limb)
 				H.visible_message("<span class='danger'>[H] изуродован до неузнаваемости!</span>")
 
-	// --- Антаг-подсказка и улики ---
 	var/antag_hint = pick("none", "syndicate", "traitor", "unknown")
 	var/real_evidence = prob(25)
 	var/fake_evidence = prob(50)
