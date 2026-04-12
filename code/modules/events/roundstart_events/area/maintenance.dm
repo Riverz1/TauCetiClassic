@@ -40,7 +40,7 @@
 	)
 
 /datum/event/feature/area/maintenance_spawn/antag_meta/setup()
-	nums = rand(2, 5)
+	nums = rand(1, 3)
 	possible_types += subtypesof(/obj/item/weapon/storage/box/syndie_kit)
 	. = ..()
 
@@ -60,7 +60,7 @@
 	possible_types = list(/mob/living/carbon/human)
 
 /datum/event/feature/area/maintenance_spawn/corpse/setup()
-	nums = 20
+	nums = rand(2, 5)
 	. = ..()
 
 /datum/event/feature/area/maintenance_spawn/corpse/spawn_atom(type, turf/T)
