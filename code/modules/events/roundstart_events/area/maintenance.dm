@@ -40,7 +40,7 @@
 	)
 
 /datum/event/feature/area/maintenance_spawn/antag_meta/setup()
-	nums = rand(1, 3)
+	nums = rand(2, 5)
 	possible_types += subtypesof(/obj/item/weapon/storage/box/syndie_kit)
 	. = ..()
 
