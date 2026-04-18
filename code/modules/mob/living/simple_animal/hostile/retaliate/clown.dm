@@ -21,7 +21,6 @@
 	melee_damage = 10
 	attacktext = "attacks"
 	attack_sound = list('sound/items/bikehorn.ogg')
-
 	min_oxy = 5
 	max_oxy = 0
 	min_tox = 0
@@ -32,14 +31,37 @@
 	max_n2 = 0
 	minbodytemp = 270
 	maxbodytemp = 370
-	heat_damage_per_tick = 15	//amount of damage applied if animal's body temperature is higher than maxbodytemp
-	cold_damage_per_tick = 10	//same as heat_damage_per_tick, only if the bodytemperature it's lower than minbodytemp
+	heat_damage_per_tick = 15 //amount of damage applied if animal's body temperature is higher than maxbodytemp
+	cold_damage_per_tick = 10 //same as heat_damage_per_tick, only if the bodytemperature it's lower than minbodytemp
 	unsuitable_atoms_damage = 10
-
 	animalistic = FALSE
 	has_head = TRUE
 	has_arm = TRUE
 	has_leg = TRUE
+
+/mob/living/simple_animal/hostile/retaliate/clown/atom_init()
+	. = ..()
+	AddComponent(/datum/component/waddle, 4, list(-14, 0, 14), list(COMSIG_MOVABLE_MOVED, COMSIG_MOVABLE_PIXELMOVE))
+
+/mob/living/simple_animal/hostile/retaliate/clown/Move(NewLoc, Dir = 0, step_x = 0, step_y = 0)
+	. = ..()
+	if(.)
+		play_unique_footstep_sound()
+
+/mob/living/simple_animal/hostile/retaliate/clown/proc/play_unique_footstep_sound()
+	playsound(src, pick(SOUNDIN_CLOWNSTEP), VOL_EFFECTS_MASTER)
+
+/mob/living/simple_animal/hostile/retaliate/clown/Destroy()
+	var/datum/component/waddle/W = GetComponent(/datum/component/waddle)
+	if(W)
+		qdel(W)
+	return ..()
+
+/mob/living/simple_animal/hostile/retaliate/clown/death(gibbed)
+	var/datum/component/waddle/W = GetComponent(/datum/component/waddle)
+	if(W)
+		qdel(W)
+	return ..()
 
 /mob/living/simple_animal/hostile/clown //Here's CopyPasta!!
 	name = "Clown"
