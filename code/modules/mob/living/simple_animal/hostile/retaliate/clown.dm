@@ -52,15 +52,6 @@
 	if(. && stat == CONSCIOUS)
 		playsound(src, pick(SOUNDIN_CLOWNSTEP), VOL_EFFECTS_MASTER)
 
-/mob/living/simple_animal/hostile/retaliate/clown/death(gibbed)
-	qdel(GetComponent(/datum/component/waddle))
-	return ..()
-
-/mob/living/simple_animal/hostile/retaliate/clown/revive()
-	. = ..()
-	if(.)
-		AddComponent(/datum/component/waddle, 4, list(-14, 0, 14), list(COMSIG_MOVABLE_MOVED, COMSIG_MOVABLE_PIXELMOVE))
-
 /mob/living/simple_animal/hostile/clown //Here's CopyPasta!!
 	name = "Clown"
 	desc = "А вот и Клоуни!"
