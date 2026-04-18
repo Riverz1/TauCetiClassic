@@ -81,7 +81,7 @@
 	var/role = pick(possible_roles)
 
 	var/cause = pick("brute", "burn", "toxin", "bleeding")
-	var/static/list/body_zones = list("chest","head","l_arm","r_arm","l_leg","r_leg")
+	var/list/body_zones = list("chest","head","l_arm","r_arm","l_leg","r_leg")
 
 	switch(cause)
 		if("brute")
