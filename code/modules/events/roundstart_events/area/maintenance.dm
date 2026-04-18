@@ -154,7 +154,7 @@
 		else
 			new /obj/item/weapon/crowbar(T)
 
-		var/static/list/misc_trash = list(
+		var/list/misc_trash = list(
 			/obj/item/clothing/mask/cigarette, /obj/item/trash/cheesie,
 			/obj/item/trash/candy, /obj/item/weapon/paper/crumpled, /obj/item/weapon/paper_bin,
 			/obj/item/clothing/glasses/regular, /obj/item/clothing/head/that, /obj/item/clothing/shoes/laceup,
