@@ -43,6 +43,7 @@
 	var/maint_access = 1
 	var/dna_lockable = FALSE
 	var/dna	//dna-locking the mech
+	var/emagged = FALSE		// Whether security systems have been compromised by emag
 	var/list/proc_res = list() //stores proc owners, like proc_res["functionname"] = owner reference
 	var/datum/effect/effect/system/spark_spread/spark_system = new
 	var/lights = 0
@@ -608,6 +609,35 @@
 
 /obj/mecha/attackby(obj/item/weapon/W, mob/user)
 
+	if(istype(W, /obj/item/weapon/card/emag))
+		var/obj/item/weapon/card/emag/E = W
+		if(!E.uses)
+			to_chat(user, "<span class='warning'>[E] разряжен.</span>")
+			return
+		if(emagged)
+			to_chat(user, "<span class='warning'>Системы безопасности [src] уже взломаны.</span>")
+			return
+		if(occupant)
+			to_chat(user, "<span class='warning'>Невозможно взломать системы управления, пока внутри находится пилот!</span>")
+			return
+
+		user.visible_message("<span class='warning'>[user] подключает [E] к интерфейсу доступа [src]...</span>", \
+							 "<span class='notice'>Вы начинаете взлом систем безопасности [src]...</span>")
+
+		if(!do_after(user, 5 SECONDS, target = src))
+			return
+
+		E.use(1)
+		emagged = TRUE
+		operation_req_access = list()
+		dna = null
+		dna_lockable = FALSE
+
+		spark_system.start()
+		user.visible_message("<span class='warning'>[src] издает серию электронных щелчков, индикаторы доступа гаснут.</span>", \
+							 "<span class='notice'>Системы безопасности [src] успешно взломаны. Любой может зайти внутрь.</span>")
+		return
+
 	if(isMMI(W))
 		if(mmi_move_inside(W,user))
 			to_chat(user, "[src]-MMI interface initialized successfuly")
@@ -940,7 +970,10 @@
 		return
 
 	var/passed
-	if(dna_lockable && dna)
+
+	if(emagged)
+		passed = 1
+	else if(dna_lockable && dna)
 		if(usr.dna.unique_enzymes==dna)
 			passed = 1
 	else if(operation_allowed(usr))
